@@ -16,6 +16,7 @@ public:
         White,
         Red,
         Green,
+        Yellow,
         Blue,
         Scarlet,
         Gray

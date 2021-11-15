@@ -8,8 +8,6 @@
 #define WINDOW_WIDTH LCD_WIDTH // TODO: Consider changing the actual window width and height to have a border around the "screen"
 #define WINDOW_HEIGHT LCD_HEIGHT
 
-#define REFRESH_RATE 70 //Hz
-
 #define CHAR_HEIGHT 17
 #define CHAR_WIDTH 12
 
@@ -148,7 +146,7 @@ void FEHLCD::_Initialize()
     _forecolor = WHITE;
     _backcolor = BLACK;
 
-    screen = tigrWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Proteus Simulator", TIGR_AUTO & TIGR_RETINA);
+    screen = tigrWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Proteus Simulator", TIGR_FIXED & TIGR_RETINA);
 
     Clear();
 
@@ -783,6 +781,9 @@ unsigned int FEHLCD::ConvertFEHColorTo24Bit(FEHLCDColor color)
         break;
     case Green:
         htmlColor = GREEN;
+        break;
+    case Yellow:
+        htmlColor = YELLOW;
         break;
     case Blue:
         htmlColor = BLUE;
