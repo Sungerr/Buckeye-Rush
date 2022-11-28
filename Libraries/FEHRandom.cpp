@@ -1,5 +1,7 @@
 #include "FEHRandom.h"
-#include "FEHLCD.h"
+#include "FEHUtility.h"
+
+#include <time.h>
 
 FEHRandom Random;
 
@@ -10,7 +12,7 @@ void FEHRandom::Initialize()
 
 void FEHRandom::Seed()
 {
-	// This function is only present to make the code compile and match the header file
+	srand(time(NULL));
 }
 
 int FEHRandom::RandInt()

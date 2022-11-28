@@ -1,5 +1,6 @@
 #include "FEHLCD.h"
 #include "FEHUtility.cpp"
+#include "FEHRandom.h"
 #include "tigr.h"
 #include <iostream>
 
@@ -155,6 +156,9 @@ void FEHLCD::_Initialize()
     // of their program, ResetTime() must be called here to initialize the timer
     // in TimeNow() and similar functions in FEHUtility.
     ResetTime();
+
+    // Also seed the random
+    Random.Seed();
 }
 
 bool FEHLCD::Touch(float *x_pos, float *y_pos)
@@ -171,6 +175,8 @@ bool FEHLCD::Touch(int *x_pos, int *y_pos)
 {
     int mouseButton;
     tigrMouse(screen, x_pos, y_pos, &mouseButton);
+
+    Update();
 
     return mouseButton & 0x01 == 1;
 }
@@ -242,11 +248,11 @@ void FEHLCD::SetBackgroundColor(unsigned int color)
     _backcolor = color;
 }
 
-void Swap(int &a, int &b)
+void Swap(int *a, int *b)
 {
-    int c = a;
-    a = b;
-    b = c;
+    int c = *a;
+    *a = *b;
+    *b = c;
 }
 
 /*************************
@@ -277,6 +283,9 @@ void FEHLCD::DrawPixel(int x, int y)
 
 void FEHLCD::DrawHorizontalLine(int y, int x1, int x2)
 {
+    if (x2 < x1) {
+        Swap(&x1, &x2);
+    }
     for (int i = x1; i <= x2; i++)
     {
         DrawPixel(i, y);
@@ -285,6 +294,9 @@ void FEHLCD::DrawHorizontalLine(int y, int x1, int x2)
 
 void FEHLCD::DrawVerticalLine(int x, int y1, int y2)
 {
+    if (y2 < y1) {
+        Swap(&y1, &y2);
+    }
     for (int i = y1; i <= y2; i++)
     {
         DrawPixel(x, i);
@@ -293,7 +305,14 @@ void FEHLCD::DrawVerticalLine(int x, int y1, int y2)
 
 void FEHLCD::DrawLine(int x1, int y1, int x2, int y2)
 {
-
+    if (x1 == x2) {
+        DrawVerticalLine(x1, y1, y2);
+        return;
+    }
+    if (y1 == y2) {
+        DrawHorizontalLine(y1, x1, x2);
+        return;
+    }
     // Using a float to be more precise, will cast the end result to an int
     float slope = (y2 - y1) / (x2 - x1);
 
@@ -313,7 +332,7 @@ void FEHLCD::DrawLine(int x1, int y1, int x2, int y2)
         // Make sure to begin at the lower Y value
         if (endY < startY)
         {
-            Swap(startY, endY);
+            Swap(&startY, &endY);
         }
 
         // Draw all of the Y values for a given X value
@@ -924,10 +943,7 @@ namespace FEHIcon
                 return 1;
             }
         }
-        else
-        {
-            return 0;
-        }
+        return 0;
     }
 
     /* Icon function to wait while it is pressed */
@@ -938,6 +954,8 @@ namespace FEHIcon
         {
             LCD.Touch(&x, &y);
         }
+
+        return 0;
     }
 
     /* Icon function to change the label of an icon with a string */

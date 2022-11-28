@@ -1,14 +1,16 @@
 #include "FEHUtility.h"
 #include <sys/time.h>
-#include <chrono>
-#include <thread>
+#include "FEHLCD.h"
 
 long time_at_last_reset_msec = 0;
 struct timeval current_time;
 
 void Sleep(int msec)
 {
-    std::this_thread::sleep_for(std::chrono::milliseconds(msec));
+    unsigned long t = TimeNowMSec(); 
+    while (TimeNowMSec() - t < msec) {
+        LCD.Update();
+    }
 }
 
 void Sleep(float sec)
