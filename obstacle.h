@@ -1,17 +1,21 @@
 //Includes FEHLCD.h & FEHUtility.h
 #include "header.h"
+#include <cstdlib>
 
 //Temp preprocessor for print debugging
 #include "stdio.h"
 #include "math.h"
+
+
+#define REMOVE 0
+#define ADD 1
 
 class Obstacle {
     public:
         /*
          * Obstacle constructor
          */
-        Obstacle() {
-        }
+        Obstacle() {}
 
         /*
          * Draws obstacle
@@ -26,38 +30,49 @@ class Obstacle {
          */
         void moveObstacle() {
             x -= speed;
+            if (x < 0) {
+                resetPosition();
+            }
+            accel();
         }
 
         /*
-         * Resets obstacle position if: 
-         *    1. obstacle reaches end of screen
-         *    2. obstacle collides with character
-         * 
-         * @param hit: true if obstacle collides with character
+         * Resets obstacle position
          */
-        void resetPosition(bool hit) {
-            if (x <= 0 && !hit) {
-                x = 319;
-            } else if (hit) {
-                x = 319;
-                speed = 0;
-                Sleep(1.0);
+        void resetPosition() {
+            x = 300;
+            maxSpeed = rand() % 5 + 2;
+
+            //Randomize y position
+            switch (rand() % 3) {
+                case 0:
+                    y = 190;
+                    break;
+                case 1:
+                    y = 180;
+                    break;
+                case 2:
+                    y = 160;
+                    break;
             }
+        }
+
+         /*
+         * Resets obstacle speed
+         */
+        void resetSpeed() {
+            speed = 1;
         }
 
         /*
          * Accelerates object to max speed
-         *
-         * @param score: current score
          */
-        void accel(int score) {
+        void accel() {
             if (speed < maxSpeed) {
                 speed += 1;
+            } else if (speed > maxSpeed) {
+                speed -= 1;
             }
-
-            // if (score % 100 == 0) {
-            //     speed += 1;
-            // }
             
         }
 

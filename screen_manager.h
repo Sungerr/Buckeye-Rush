@@ -10,8 +10,7 @@
 //Struct for game tracking
 struct game_state {
     int screen;
-    int score[20];
-    char scoreNames[20][20];
+    int score[10] = {0};
 };
 
 /*
@@ -30,16 +29,6 @@ void DrawMenu(FEHIcon::Icon menuIcon[5]) {
 
     //Draw the buttons
     FEHIcon::DrawIconArray(menuIcon, 5, 1, 50, 10, 75, 75, labels, WHITE, WHITE);
-}
-
-/*
- * Draws game screen
- *
- * @param state: pointer to game state struct
- */
-void playGame(game_state *state) {
-    LCD.Clear( FEHLCD::Gray);
-    LCD.WriteAt("Play Game Here", 5, 20);
 }
 
 /*
@@ -66,19 +55,20 @@ void displayInstructions() {
  */
 void displayHighScores(game_state *state) {
     LCD.Clear( FEHLCD::Gray);
-    LCD.WriteAt("Name", 30, 20);
-    LCD.WriteAt("Score", 220, 20);
-    LCD.DrawLine(0, 40, 319, 40);
-    LCD.DrawLine(160, 0, 160, 319);
-
-    //Write names
-    char name[20];
-    strcpy(name, (*state).scoreNames[0]);
-    LCD.WriteAt(name, 30, 50);
+    LCD.WriteAt("High Scores", 90, 10);
+    LCD.DrawLine(0, 32, 319, 32);
 
     //Write high scores
-    char score[2];
-    LCD.WriteAt(score, 230, 50);
+    int y = 40;
+    int counter = 1;
+    char number[4];
+    for (int score : (*state).score) {
+        sprintf(number, "%d.", counter);
+        LCD.WriteAt(number, 115, y);
+        LCD.WriteAt(score, 175, y);
+        y+=20;
+        counter++;
+    }
 }
 
 /*
@@ -99,4 +89,25 @@ void drawGameOver(int score) {
     LCD.WriteAt("Game Over", 105, 20);
     LCD.WriteAt("Final Score:", 55, 60);
     LCD.WriteAt(score, 215, 60);
+}
+
+/*
+ * Update high score
+ *
+ * @param score: final score achieved
+ * @param state: pointer to game state struct
+ */
+void updateHighScores(int score, game_state *state) {
+    //Check if score is high enough to be on high score list
+    for (int i = 0; i < 10; i++) {
+        if (score > (*state).score[i]) {
+            //Shift all scores down
+            for (int j = 9; j > i; j--) {
+                (*state).score[j] = (*state).score[j-1];
+            }
+            //Insert new score
+            (*state).score[i] = score;
+            break;
+        }
+    }
 }

@@ -12,10 +12,6 @@ int main() {
     //Set inital game state
     state.screen = MENU;
 
-    //Placeholder value
-    strcpy(state.scoreNames[0], "Peter Sung");
-    state.score[0] = 999;
-
     //Create the menu buttons
     FEHIcon::Icon menuButtons[5];
     DrawMenu(menuButtons);
@@ -33,20 +29,27 @@ int main() {
     while(1) {
         //Game screen logic
         if (state.screen == GAME) {
+
+            //Calculate time elapsed since game start
             time = TimeNow() - gameStart;
+
+            //Draw character & obstacle
             character.drawCharacter(obstacle);
 
+            //Draw score & health HUD
             LCD.WriteAt("Score: ", 180, 10);
             LCD.WriteAt((int) (time*10), 255, 10);
             LCD.WriteAt("Health: ", 30, 10);
             LCD.WriteAt(character.getHeath(), 120, 10);
 
+            //Obstacle movement
             obstacle.moveObstacle();
-            obstacle.resetPosition(character.collision(obstacle.getX(), obstacle.getY()));
-            obstacle.accel((int) (time*10));
+            character.collision(&obstacle);
 
+            //Check for game over
             if (character.getHeath() <= 0) {
                 drawGameOver((int) (time*10));
+                updateHighScores((int) (time*10), &state);
                 FEHIcon::DrawIconArray(menuIcon, 1, 1, 150, 50, 60, 60, menuLabel, WHITE, WHITE);
                 state.screen = GAME_OVER;
             }
@@ -65,9 +68,6 @@ int main() {
                     //Set start time for score
                     gameStart = TimeNow();
 
-                    //Draws game screen
-                    playGame(&state);
-
                     //Reset & draw character
                     character.reset();
                     character.drawCharacter(obstacle);
@@ -85,7 +85,7 @@ int main() {
 
                     //Draws instructions screen
                     displayInstructions();
-                    FEHIcon::DrawIconArray(menuIcon, 1, 1, 200, 2, 2, 200, backLabel, WHITE, WHITE);
+                    FEHIcon::DrawIconArray(menuIcon, 1, 1, 210, 2, 2, 243, backLabel, WHITE, WHITE);
 
                     //Buffer to prevent double touch
                     Sleep(0.5);
@@ -98,7 +98,7 @@ int main() {
 
                     //Draws high scores screen
                     displayHighScores(&state);
-                    FEHIcon::DrawIconArray(menuIcon, 1, 1, 200, 2, 2, 200, backLabel, WHITE, WHITE);
+                    FEHIcon::DrawIconArray(menuIcon, 1, 1, 210, 2, 2, 243, backLabel, WHITE, WHITE);
 
                     //Buffer to prevent double touch
                     Sleep(0.5);
@@ -111,7 +111,7 @@ int main() {
 
                     //Draws credits screen
                     displayCredits();
-                    FEHIcon::DrawIconArray(menuIcon, 1, 1, 200, 2, 2, 200, backLabel, WHITE, WHITE);
+                    FEHIcon::DrawIconArray(menuIcon, 1, 1, 210, 2, 2, 243, backLabel, WHITE, WHITE);
 
                     //Buffer to prevent double touch
                     Sleep(0.5);

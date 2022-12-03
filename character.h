@@ -33,7 +33,7 @@ class Character {
                 LCD.WriteAt(health, 120, 10);
 
                 //Check obstacle collision
-                (*o).resetPosition(collision((*o).getX(), (*o).getY()));
+                collision(o);
 
                 //Delay for jump animation
                 Sleep(0.01);
@@ -43,26 +43,19 @@ class Character {
         /*
          * Checks for character collision with obstacle
          *
-         * @param obstacleX: obstacle x position
-         * @param obstacleY: obstacle y position
-         * @return bool: true if collision occurs
+         * @param o: pointer to obstacle object
          */
-        bool collision(int obstacleX, int obstacleY) {
-            bool hit = false;
+        void collision(Obstacle *o) {
             //Determine if position of obstacle is within character boundaries
-            if (obstacleX <= x + 25 && obstacleX >= x - 10) {
-                if (obstacleY <= y + 10 && obstacleY >= y - 25) {
+            if ((*o).getX() <= x + 25 && (*o).getX() >= x - 10) {
+                if ((*o).getY() <= y + 25 && (*o).getY() >= y - 10) {
                     //Collision detected
-                    hit = true;
-
-                    //Decrease health
                     health--;
+                    (*o).resetPosition();
+                    Sleep(0.5);
                     
-                    printf("Health: %d\n", health);
-                    printf("Hit: %d\n", hit);
                 }
             }
-            return hit;
         }
 
         /*
