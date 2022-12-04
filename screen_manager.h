@@ -48,29 +48,6 @@ void displayInstructions() {
     
 }
 
-/* 
- * Draws high scores screen
- *
- * @param state: pointer to game state struct
- */
-void displayHighScores(game_state *state) {
-    LCD.Clear( FEHLCD::Gray);
-    LCD.WriteAt("High Scores", 90, 10);
-    LCD.DrawLine(0, 32, 319, 32);
-
-    //Write high scores
-    int y = 40;
-    int counter = 1;
-    char number[4];
-    for (int score : (*state).score) {
-        sprintf(number, "%d.", counter);
-        LCD.WriteAt(number, 115, y);
-        LCD.WriteAt(score, 175, y);
-        y+=20;
-        counter++;
-    }
-}
-
 /*
  * Draws credits screen
  */
@@ -90,6 +67,38 @@ void drawGameOver(int score) {
     LCD.WriteAt("Final Score:", 55, 60);
     LCD.WriteAt(score, 215, 60);
 }
+/*
+ * Loads scores from file
+ *
+ * @param state: game state struct
+ */
+void loadScore(game_state *state) {
+    FILE *file;
+    file = fopen("highscores.txt", "r");
+    int score = 0;
+    int index = 0;
+    
+    while (fscanf(file, "%d", &score) != EOF) {
+        (*state).score[index] = score;
+        index++;
+    }
+    fclose(file);
+}
+
+/*
+ * Saves current scores to file
+ *
+ * @param state: game state struct
+ */
+void saveScores(game_state *state) {
+    FILE *file;
+    file = fopen("highscores.txt", "w");
+    
+    for (int scores : (*state).score) {
+        fprintf(file, "%d\n", scores);
+    }
+    fclose(file);
+}
 
 /*
  * Update high score
@@ -98,6 +107,7 @@ void drawGameOver(int score) {
  * @param state: pointer to game state struct
  */
 void updateHighScores(int score, game_state *state) {
+    loadScore(state);
     //Check if score is high enough to be on high score list
     for (int i = 0; i < 10; i++) {
         if (score > (*state).score[i]) {
@@ -109,5 +119,33 @@ void updateHighScores(int score, game_state *state) {
             (*state).score[i] = score;
             break;
         }
+    }
+    saveScores(state);
+}
+
+
+/* 
+ * Draws high scores screen
+ *
+ * @param state: pointer to game state struct
+ */
+void displayHighScores(game_state *state) {
+    LCD.Clear( FEHLCD::Gray);
+    LCD.WriteAt("High Scores", 90, 10);
+    LCD.DrawLine(0, 32, 319, 32);
+
+    //Load scores
+    loadScore(state);
+
+    //Write high scores
+    int y = 40;
+    int counter = 1;
+    char number[4];
+    for (int score : (*state).score) {
+        sprintf(number, "%d.", counter);
+        LCD.WriteAt(number, 115, y);
+        LCD.WriteAt(score, 175, y);
+        y+=20;
+        counter++;
     }
 }

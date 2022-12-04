@@ -1,6 +1,8 @@
 #include "character.h"
 #include "screen_manager.h"
 
+//Main file
+
 /* Entry point to the application */
 int main() {
     //Declare variables
@@ -139,7 +141,7 @@ int main() {
 
             } else if (state.screen == GAME_OVER) {
                 if (menuIcon[0].Pressed(x,y,0)) {
-                    //Back button pressed in game over
+                    //Menu button pressed in game over
 
                     //Set screen state to menu
                     state.screen = MENU;

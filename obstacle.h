@@ -1,6 +1,5 @@
 //Includes FEHLCD.h & FEHUtility.h
 #include "header.h"
-#include <cstdlib>
 
 //Temp preprocessor for print debugging
 #include "stdio.h"
