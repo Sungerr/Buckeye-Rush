@@ -1,6 +1,7 @@
 #include "obstacle.h"
-
 #pragma once
+
+// Character object class
 
 class Character {
     public: 

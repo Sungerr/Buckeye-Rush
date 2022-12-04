@@ -2,8 +2,7 @@
 #include "header.h"
 
 //Temp preprocessor for print debugging
-#include "stdio.h"
-#include "math.h"
+
 
 
 #define REMOVE 0

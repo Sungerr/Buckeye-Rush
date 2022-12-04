@@ -1,6 +1,8 @@
 //Includes FEHLCD.h & FEHUtility.h
 #include "header.h"
 
+//Screen Manager file
+
 //Constants for screen tracking
 #define MENU 0
 #define GAME 1
