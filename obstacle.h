@@ -1,9 +1,7 @@
-//Includes FEHLCD.h & FEHUtility.h
+//Includes header file
 #include "header.h"
 
-//Temp preprocessor for print debugging
-
-
+//Obsacle object class
 
 #define REMOVE 0
 #define ADD 1
