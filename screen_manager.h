@@ -55,7 +55,9 @@ void displayInstructions() {
  */
 void displayCredits() {
     LCD.Clear( FEHLCD::Gray);
-    LCD.WriteAt("Made by: Peter Sung", 5, 20);
+    LCD.WriteAt("Made by: Peter Sung", 30, 40);
+    LCD.WriteAt("Using:", 15, 80);
+    LCD.WriteAt("OSU Proteus Simulator", 30, 100);
 }
 
 /*
